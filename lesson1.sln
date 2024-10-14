@@ -1,6 +1,7 @@
 #include <stdio.h> 
 #include <locale.h> 
 #include <ctype.h> // Для проверки символов
+#include <iostream>
 
 int Arcan(int day, int month, int year) {
     // Суммируем цифры даты рождения 
@@ -21,19 +22,35 @@ int main() {
     setlocale(LC_ALL, "Russian");
     int day, month, year;
     char input[20]; // Буфер для ввода даты
+    int dots = 0; // Счетчик точек
 
     printf("Введите дату рождения (пример: день.месяц.год): ");
     scanf_s("%s", input, sizeof(input));
 
-    // Проверяем, что ввод состоит только из цифр и точки 
+    // Проверка количества символов
+    if ( (strlen(input)) > 10) {
+        printf("Некорректный ввод. Слишком много символов.\n");
+        return 1; // Выход из программы с кодом ошибки
+    }
+
+    // Проверка на допустимые символы и количество точек
     for (int i = 0; input[i] != '\0'; i++) {
-        if (!isdigit(input[i]) & input[i] != '.') {
-            printf("Некорректный ввод. Введите только цифры и точку.\n");
-            return 1; // Выход из программы с кодом ошибки
+        if (!isdigit(input[i])) {
+            if (input[i] == '.') {
+                dots++;
+                if (dots > 2) {
+                    printf("Некорректный ввод. Слишком много точек.\n");
+                    return 1; // Выход из программы с кодом ошибки
+                }
+            }
+            else {
+                printf("Некорректный ввод. Введите только цифры и точку.\n");
+                return 1; // Выход из программы с кодом ошибки
+            }
         }
     }
 
-    scanf_s(input, "%d.%d.%d", &day, &month, &year);
+    sscanf_s(input, "%d.%d.%d", &day, &month, &year);
 
     int arcana = Arcan(day, month, year);
     printf("Ваш аркан: %d", arcana);
